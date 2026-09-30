@@ -320,3 +320,26 @@ td {
   background: #e6f4ed;
   color: #1d754d;
 }
+
+.risco {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.risco.alto {
+  background: #fdeaea;
+  color: #b42318;
+}
+
+.risco.médio {
+  background: #fff3d6;
+  color: #9a6700;
+}
+
+.risco.baixo {
+  background: #e6f4ed;
+  color: #1d754d;
+}

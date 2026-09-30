@@ -9,6 +9,7 @@ import Fornecedores from './pages/Fornecedores';
 import Lotes from './pages/Lotes';
 import Descartes from './pages/Descartes';
 import Relatorios from './pages/Relatorios';
+import Alertas from './pages/Alertas';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -129,6 +130,14 @@ function App() {
           element={
             localStorage.getItem('token')
               ? <Relatorios />
+              : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/alertas"
+          element={
+            localStorage.getItem('token')
+              ? <Alertas />
               : <Navigate to="/" />
           }
         />

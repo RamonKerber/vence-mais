@@ -20,7 +20,9 @@ function Sidebar() {
         <NavLink to="/fornecedores">Fornecedores</NavLink>
         <NavLink to="/lotes">Lotes</NavLink>
         <NavLink to="/descartes">Descartes</NavLink>
+        <NavLink to="/alertas">Alertas</NavLink>
         <NavLink to="/relatorios">Relatórios</NavLink>
+        
       </nav>
 
       <button onClick={sair}>Sair</button>

@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 function Lotes() {
   const [lotes, setLotes] = useState([]);
   const [produtos, setProdutos] = useState([]);
+
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [loteEditando, setLoteEditando] = useState(null);
 
@@ -13,16 +14,20 @@ function Lotes() {
   const [preco, setPreco] = useState('');
   const [dataValidade, setDataValidade] = useState('');
 
+  const [filtroProduto, setFiltroProduto] = useState('');
+  const [filtroSituacao, setFiltroSituacao] = useState('');
+  const [filtroData, setFiltroData] = useState('');
+
   const token = localStorage.getItem('token');
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
 
   async function carregarDados() {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-
       const [resLotes, resProdutos] = await Promise.all([
         axios.get('http://localhost:3000/lotes', config),
         axios.get('http://localhost:3000/produtos', config)
@@ -31,7 +36,7 @@ function Lotes() {
       setLotes(resLotes.data);
       setProdutos(resProdutos.data);
     } catch (erro) {
-      console.error('Erro ao carregar lotes:', erro);
+      console.error('Erro ao carregar dados:', erro);
     }
   }
 
@@ -67,12 +72,6 @@ function Lotes() {
       data_validade: dataValidade
     };
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
-
     try {
       if (loteEditando) {
         await axios.put(
@@ -99,16 +98,16 @@ function Lotes() {
   }
 
   async function excluirLote(id) {
-    if (!window.confirm('Deseja realmente excluir este lote?')) return;
+    const confirmar = window.confirm(
+      'Deseja realmente excluir este lote?'
+    );
+
+    if (!confirmar) return;
 
     try {
       await axios.delete(
         `http://localhost:3000/lotes/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+        config
       );
 
       carregarDados();
@@ -118,6 +117,41 @@ function Lotes() {
         'Não foi possível excluir o lote.'
       );
     }
+  }
+
+  async function filtrarLotes(
+    produto = filtroProduto,
+    situacao = filtroSituacao,
+    data = filtroData
+  ) {
+    try {
+      const resposta = await axios.get(
+        'http://localhost:3000/lotes',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+
+          params: {
+            produto: produto || undefined,
+            situacao: situacao || undefined,
+            data_validade: data || undefined
+          }
+        }
+      );
+
+      setLotes(resposta.data);
+    } catch (erro) {
+      console.error('Erro ao filtrar lotes:', erro);
+    }
+  }
+
+  function limparFiltros() {
+    setFiltroProduto('');
+    setFiltroSituacao('');
+    setFiltroData('');
+
+    filtrarLotes('', '', '');
   }
 
   return (
@@ -130,7 +164,10 @@ function Lotes() {
 
           <button
             className="botao-verde"
-            onClick={() => setMostrarFormulario(true)}
+            onClick={() => {
+              limparFormulario();
+              setMostrarFormulario(true);
+            }}
           >
             Novo lote
           </button>
@@ -138,7 +175,9 @@ function Lotes() {
 
         {mostrarFormulario && (
           <div className="formulario-card">
-            <h3>{loteEditando ? 'Editar lote' : 'Novo lote'}</h3>
+            <h3>
+              {loteEditando ? 'Editar lote' : 'Novo lote'}
+            </h3>
 
             <form onSubmit={salvarLote}>
               <select
@@ -146,7 +185,9 @@ function Lotes() {
                 onChange={(e) => setIdProduto(e.target.value)}
                 required
               >
-                <option value="">Selecione o produto</option>
+                <option value="">
+                  Selecione o produto
+                </option>
 
                 {produtos.map((produto) => (
                   <option
@@ -163,7 +204,9 @@ function Lotes() {
                 placeholder="Quantidade"
                 min="0"
                 value={quantidade}
-                onChange={(e) => setQuantidade(e.target.value)}
+                onChange={(e) =>
+                  setQuantidade(e.target.value)
+                }
                 required
               />
 
@@ -180,13 +223,20 @@ function Lotes() {
               <input
                 type="date"
                 value={dataValidade}
-                onChange={(e) => setDataValidade(e.target.value)}
+                onChange={(e) =>
+                  setDataValidade(e.target.value)
+                }
                 required
               />
 
               <div className="botoes-formulario">
-                <button type="submit" className="botao-verde">
-                  {loteEditando ? 'Salvar alterações' : 'Salvar'}
+                <button
+                  type="submit"
+                  className="botao-verde"
+                >
+                  {loteEditando
+                    ? 'Salvar alterações'
+                    : 'Salvar'}
                 </button>
 
                 <button
@@ -201,6 +251,62 @@ function Lotes() {
           </div>
         )}
 
+        <div className="filtros">
+          <input
+            type="text"
+            placeholder="Pesquisar produto..."
+            value={filtroProduto}
+            onChange={(e) =>
+              setFiltroProduto(e.target.value)
+            }
+          />
+
+          <select
+            value={filtroSituacao}
+            onChange={(e) =>
+              setFiltroSituacao(e.target.value)
+            }
+          >
+            <option value="">
+              Todas as situações
+            </option>
+
+            <option value="proximo">
+              Próximo do vencimento
+            </option>
+
+            <option value="vencido">
+              Vencido
+            </option>
+
+            <option value="normal">
+              Normal
+            </option>
+          </select>
+
+          <input
+            type="date"
+            value={filtroData}
+            onChange={(e) =>
+              setFiltroData(e.target.value)
+            }
+          />
+
+          <button
+            className="botao-verde"
+            onClick={() => filtrarLotes()}
+          >
+            Filtrar
+          </button>
+
+          <button
+            className="botao-cinza"
+            onClick={limparFiltros}
+          >
+            Limpar
+          </button>
+        </div>
+
         <div className="tabela-container">
           <table>
             <thead>
@@ -209,6 +315,7 @@ function Lotes() {
                 <th>Quantidade</th>
                 <th>Preço</th>
                 <th>Validade</th>
+                <th>Situação</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -217,10 +324,32 @@ function Lotes() {
               {lotes.map((lote) => (
                 <tr key={lote.id_lote}>
                   <td>{lote.produto}</td>
+
                   <td>{lote.quantidade}</td>
-                  <td>R$ {Number(lote.preco).toFixed(2)}</td>
+
                   <td>
-                    {new Date(lote.data_validade).toLocaleDateString('pt-BR')}
+                    R$ {Number(lote.preco).toFixed(2)}
+                  </td>
+
+                  <td>
+                    {new Date(
+                      lote.data_validade
+                    ).toLocaleDateString('pt-BR')}
+                  </td>
+
+                  <td>
+                    <span
+                      className={
+                        lote.situacao === 'VENCIDO'
+                          ? 'status vencido'
+                          : lote.situacao ===
+                            'PRÓXIMO DO VENCIMENTO'
+                          ? 'status proximo'
+                          : 'status normal'
+                      }
+                    >
+                      {lote.situacao}
+                    </span>
                   </td>
 
                   <td>
@@ -233,13 +362,23 @@ function Lotes() {
 
                     <button
                       className="botao-excluir"
-                      onClick={() => excluirLote(lote.id_lote)}
+                      onClick={() =>
+                        excluirLote(lote.id_lote)
+                      }
                     >
                       Excluir
                     </button>
                   </td>
                 </tr>
               ))}
+
+              {lotes.length === 0 && (
+                <tr>
+                  <td colSpan="6">
+                    Nenhum lote encontrado.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

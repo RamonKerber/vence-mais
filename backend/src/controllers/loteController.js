@@ -2,23 +2,76 @@ const pool = require('../config/database');
 
 async function listar(req, res) {
   try {
-    const resultado = await pool.query(`
+    const { produto, situacao, data_validade } = req.query;
+
+    let query = `
       SELECT
         l.id_lote,
         l.quantidade,
         l.preco,
         l.data_validade,
-        p.id_produto,
-        p.nome AS produto
+        l.id_produto,
+        p.nome AS produto,
+        CASE
+          WHEN l.data_validade < CURRENT_DATE
+            THEN 'VENCIDO'
+          WHEN l.data_validade <= CURRENT_DATE + INTERVAL '7 days'
+            THEN 'PRÓXIMO DO VENCIMENTO'
+          ELSE 'NORMAL'
+        END AS situacao
       FROM lotes l
-      JOIN produtos p ON l.id_produto = p.id_produto
-      ORDER BY l.data_validade
-    `);
+      JOIN produtos p
+        ON p.id_produto = l.id_produto
+      WHERE 1 = 1
+    `;
+
+    const valores = [];
+
+    if (produto) {
+      valores.push(produto);
+      query += `
+        AND p.nome ILIKE '%' || $${valores.length} || '%'
+      `;
+    }
+
+    if (data_validade) {
+      valores.push(data_validade);
+      query += `
+        AND l.data_validade = $${valores.length}
+      `;
+    }
+
+    if (situacao === 'vencido') {
+      query += `
+        AND l.data_validade < CURRENT_DATE
+      `;
+    }
+
+    if (situacao === 'proximo') {
+      query += `
+        AND l.data_validade >= CURRENT_DATE
+        AND l.data_validade <= CURRENT_DATE + INTERVAL '7 days'
+      `;
+    }
+
+    if (situacao === 'normal') {
+      query += `
+        AND l.data_validade > CURRENT_DATE + INTERVAL '7 days'
+      `;
+    }
+
+    query += ` ORDER BY l.data_validade`;
+
+    const resultado = await pool.query(query, valores);
 
     return res.json(resultado.rows);
+
   } catch (erro) {
     console.error(erro);
-    return res.status(500).json({ mensagem: 'Erro ao listar lotes.' });
+
+    return res.status(500).json({
+      mensagem: 'Erro ao listar lotes.'
+    });
   }
 }
 
