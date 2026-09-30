@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import axios from 'axios';
+import api from './api';
 import Dashboard from './pages/Dashboard';
 import './App.css';
 import Produtos from './pages/Produtos';
@@ -20,8 +20,8 @@ function Login() {
     event.preventDefault();
 
     try {
-      const resposta = await axios.post(
-        'http://localhost:3000/auth/login',
+      const resposta = await api.post(
+        '/auth/login',
         { email, senha }
       );
 

@@ -18,7 +18,8 @@ async function listarAlertas(req, res) {
         END AS situacao
       FROM lotes l
       JOIN produtos p ON p.id_produto = l.id_produto
-      WHERE l.data_validade <= CURRENT_DATE + INTERVAL '7 days'
+      WHERE l.quantidade > 0
+      AND l.data_validade <= CURRENT_DATE + INTERVAL '7 days'
       ORDER BY l.data_validade
     `);
 
@@ -54,7 +55,8 @@ async function listarRiscos(req, res) {
 
       FROM lotes l
       JOIN produtos p ON p.id_produto = l.id_produto
-
+      
+      WHERE l.quantidade > 0
       ORDER BY
         CASE
           WHEN l.data_validade < CURRENT_DATE THEN 1

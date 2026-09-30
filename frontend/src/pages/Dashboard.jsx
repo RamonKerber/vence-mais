@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 
@@ -12,14 +12,7 @@ function Dashboard() {
       try {
         const token = localStorage.getItem('token');
 
-        const resposta = await axios.get(
-          'http://localhost:3000/dashboard',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
+        const resposta = await api.get('/dashboard');
 
         setDados(resposta.data);
       } catch {

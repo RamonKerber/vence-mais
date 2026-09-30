@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Relatorios() {
@@ -18,8 +18,8 @@ function Relatorios() {
         };
 
         const [resValidade, resPerdas] = await Promise.all([
-          axios.get('http://localhost:3000/relatorios/validade', config),
-          axios.get('http://localhost:3000/relatorios/perdas', config)
+          api.get('/relatorios/validade', config),
+          api.get('/relatorios/perdas', config)
         ]);
 
         setValidade(resValidade.data);

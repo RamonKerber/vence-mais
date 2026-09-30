@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Produtos() {
@@ -30,9 +30,9 @@ function Produtos() {
     try {
       const [resProdutos, resCategorias, resFornecedores] =
         await Promise.all([
-          axios.get('http://localhost:3000/produtos', config),
-          axios.get('http://localhost:3000/categorias', config),
-          axios.get('http://localhost:3000/fornecedores', config)
+          api.get('/produtos', config),
+          api.get('/categorias', config),
+          api.get('/fornecedores', config)
         ]);
 
       setProdutos(resProdutos.data);
@@ -77,14 +77,14 @@ function Produtos() {
 
     try {
       if (produtoEditando) {
-        await axios.put(
-          `http://localhost:3000/produtos/${produtoEditando}`,
+        await api.put(
+          `/produtos/${produtoEditando}`,
           dados,
           config
         );
       } else {
-        await axios.post(
-          'http://localhost:3000/produtos',
+        await api.post(
+          '/produtos',
           dados,
           config
         );
@@ -108,8 +108,8 @@ function Produtos() {
     if (!confirmar) return;
 
     try {
-      await axios.delete(
-        `http://localhost:3000/produtos/${id}`,
+      await api.delete(
+        `/produtos/${id}`,
         config
       );
 
@@ -127,8 +127,8 @@ function Produtos() {
     categoriaFiltro = filtroCategoria
   ) {
     try {
-      const resposta = await axios.get(
-        'http://localhost:3000/produtos',
+      const resposta = await get(
+        '/produtos',
         {
           headers: {
             Authorization: `Bearer ${token}`

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Fornecedores() {
@@ -15,8 +15,8 @@ function Fornecedores() {
 
   async function carregarFornecedores() {
     try {
-      const resposta = await axios.get(
-        'http://localhost:3000/fornecedores',
+      const resposta = await api.get(
+        '/fornecedores',
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -67,14 +67,14 @@ function Fornecedores() {
 
     try {
       if (fornecedorEditando) {
-        await axios.put(
-          `http://localhost:3000/fornecedores/${fornecedorEditando}`,
+        await api.put(
+          `/fornecedores/${fornecedorEditando}`,
           dados,
           config
         );
       } else {
-        await axios.post(
-          'http://localhost:3000/fornecedores',
+        await api.post(
+          '/fornecedores',
           dados,
           config
         );
@@ -98,8 +98,8 @@ function Fornecedores() {
     if (!confirmar) return;
 
     try {
-      await axios.delete(
-        `http://localhost:3000/fornecedores/${id}`,
+      await api.delete(
+        `/fornecedores/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

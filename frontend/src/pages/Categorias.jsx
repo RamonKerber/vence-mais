@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Categorias() {
@@ -14,8 +14,8 @@ function Categorias() {
 
   async function carregarCategorias() {
     try {
-      const resposta = await axios.get(
-        'http://localhost:3000/categorias',
+      const resposta = await api.get(
+        '/categorias',
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -63,14 +63,14 @@ function Categorias() {
 
     try {
       if (categoriaEditando) {
-        await axios.put(
-          `http://localhost:3000/categorias/${categoriaEditando}`,
+        await api.put(
+          `/categorias/${categoriaEditando}`,
           dados,
           config
         );
       } else {
-        await axios.post(
-          'http://localhost:3000/categorias',
+        await api.post(
+          '/categorias',
           dados,
           config
         );
@@ -94,8 +94,8 @@ function Categorias() {
     if (!confirmar) return;
 
     try {
-      await axios.delete(
-        `http://localhost:3000/categorias/${id}`,
+      await api.delete(
+        `/categorias/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

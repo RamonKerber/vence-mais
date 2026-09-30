@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Descartes() {
@@ -23,8 +23,8 @@ function Descartes() {
 
     try {
       const [resDescartes, resLotes] = await Promise.all([
-        axios.get('http://localhost:3000/descartes', config),
-        axios.get('http://localhost:3000/lotes', config)
+        api.get('/descartes', config),
+        api.get('/lotes', config)
       ]);
 
       setDescartes(resDescartes.data);
@@ -50,8 +50,8 @@ function Descartes() {
     event.preventDefault();
 
     try {
-      await axios.post(
-        'http://localhost:3000/descartes',
+      await api.post(
+        '/descartes',
         {
           id_lote: Number(idLote),
           quantidade_descartada: Number(quantidade),

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Alertas() {
@@ -18,8 +18,8 @@ function Alertas() {
         };
 
         const [resAlertas, resRiscos] = await Promise.all([
-          axios.get('http://localhost:3000/alertas', config),
-          axios.get('http://localhost:3000/alertas/riscos', config)
+          api.get('/alertas', config),
+          api.get('/alertas/riscos', config)
         ]);
 
         setAlertas(resAlertas.data);

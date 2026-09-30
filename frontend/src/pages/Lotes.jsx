@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Sidebar from '../components/Sidebar';
 
 function Lotes() {
@@ -29,8 +29,8 @@ function Lotes() {
   async function carregarDados() {
     try {
       const [resLotes, resProdutos] = await Promise.all([
-        axios.get('http://localhost:3000/lotes', config),
-        axios.get('http://localhost:3000/produtos', config)
+        api.get('/lotes', config),
+        api.get('/produtos', config)
       ]);
 
       setLotes(resLotes.data);
@@ -74,14 +74,14 @@ function Lotes() {
 
     try {
       if (loteEditando) {
-        await axios.put(
-          `http://localhost:3000/lotes/${loteEditando}`,
+        await api.put(
+          `/lotes/${loteEditando}`,
           dados,
           config
         );
       } else {
-        await axios.post(
-          'http://localhost:3000/lotes',
+        await api.post(
+          '/lotes',
           dados,
           config
         );
@@ -105,8 +105,8 @@ function Lotes() {
     if (!confirmar) return;
 
     try {
-      await axios.delete(
-        `http://localhost:3000/lotes/${id}`,
+      await api.delete(
+        `/lotes/${id}`,
         config
       );
 
@@ -125,8 +125,8 @@ function Lotes() {
     data = filtroData
   ) {
     try {
-      const resposta = await axios.get(
-        'http://localhost:3000/lotes',
+      const resposta = await api.get(
+        '/lotes',
         {
           headers: {
             Authorization: `Bearer ${token}`
