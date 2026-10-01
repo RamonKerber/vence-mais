@@ -77,3 +77,25 @@ ON lotes(data_validade);
 
 CREATE INDEX idx_descarte_data
 ON descartes(data_descarte);
+
+CREATE TABLE IF NOT EXISTS movimentacoes_estoque (
+    id_movimentacao SERIAL PRIMARY KEY,
+
+    id_lote INT NOT NULL,
+
+    quantidade INT NOT NULL
+        CHECK (quantidade > 0),
+
+    tipo VARCHAR(30) NOT NULL
+        CHECK (tipo IN ('VENDA', 'CONSUMO', 'OUTROS')),
+
+    data_movimentacao DATE NOT NULL,
+
+    CONSTRAINT fk_movimentacao_lote
+        FOREIGN KEY (id_lote)
+        REFERENCES lotes(id_lote)
+        ON DELETE RESTRICT
+);
+
+CREATE INDEX IF NOT EXISTS idx_movimentacao_lote
+ON movimentacoes_estoque(id_lote);
