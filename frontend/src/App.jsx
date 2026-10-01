@@ -10,6 +10,7 @@ import Lotes from './pages/Lotes';
 import Descartes from './pages/Descartes';
 import Relatorios from './pages/Relatorios';
 import Alertas from './pages/Alertas';
+import Movimentacoes from './pages/Movimentacoes';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -138,6 +139,14 @@ function App() {
           element={
             localStorage.getItem('token')
               ? <Alertas />
+              : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/movimentacoes"
+          element={
+            localStorage.getItem('token')
+              ? <Movimentacoes />
               : <Navigate to="/" />
           }
         />

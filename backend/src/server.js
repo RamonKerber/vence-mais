@@ -11,6 +11,7 @@ const alertaRoutes = require('./routes/alertaRoutes');
 const descarteRoutes = require('./routes/descarteRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const relatorioRoutes = require('./routes/relatorioRoutes');
+const movimentacaoRoutes = require('./routes/movimentacaoRoutes');
 
 const authRoutes = require('./routes/authRoutes');
 
@@ -55,3 +56,5 @@ app.use('/descartes', descarteRoutes);
 app.use('/dashboard', dashboardRoutes);
 
 app.use('/relatorios', relatorioRoutes);
+
+app.use('/movimentacoes', movimentacaoRoutes);

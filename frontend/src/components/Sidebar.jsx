@@ -19,6 +19,7 @@ function Sidebar() {
         <NavLink to="/categorias">Categorias</NavLink>
         <NavLink to="/fornecedores">Fornecedores</NavLink>
         <NavLink to="/lotes">Lotes</NavLink>
+        <NavLink to="/movimentacoes">Movimentações</NavLink>
         <NavLink to="/descartes">Descartes</NavLink>
         <NavLink to="/alertas">Alertas</NavLink>
         <NavLink to="/relatorios">Relatórios</NavLink>
